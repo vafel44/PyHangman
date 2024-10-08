@@ -6,7 +6,7 @@ import messages as msg
 class GameCore:
     
     def __init__(self):
-        self.state = 1
+
         #буква, введённая пользователем
         self.p_letter = None
 
@@ -30,18 +30,32 @@ class GameCore:
         print(msg.msg_dict.get("Hello"))
         print(msg.msg_dict.get("Guess").format(self.rm_len))
         print(msg.msg_dict.get("Antogonize1"))
+        answer = input(msg.msg_dict.get("Ready?")+" ")
 
-        self.game_cycle() 
+        if answer == "Да":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print(self.unguessed_string)
+            print(msg.msg_dict.get("AttemptsLeft").format(self.attempts))
+            self.game_cycle() 
+
+        elif answer == "Нет":
+            print(msg.msg_dict.get("GoodBye"))
+            exit()
 
     def game_cycle(self):
-            
-        while self.attempts != 0:
-            print(self.check_win())
-            if self.state == 0:
+        
+        while self.attempts != -1:
+
+            if self.check_win() == True:
+                print(msg.msg_dict.get('Win'))
                 break
-                        
+            elif self.attempts == 0:
+                print(msg.msg_dict.get('Lose').format(self.random_word))
+                break
+            
             print(msg.msg_dict.get('Input1'))
             self.p_letter = wor.user_input()[:1]
+            
             letter_in_word = wor.find_letter_in_set(self.p_letter, self.random_word) 
             
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -54,17 +68,13 @@ class GameCore:
                 print(msg.msg_dict.get('Incorrect'))
                 self.attempts -= 1
 
+            print(msg.msg_dict.get('AttemptsLeft').format(self.attempts))
             print(" ".join(self.unguessed_list))
 
     def check_win(self):
         
         if "_" not in self.unguessed_list:
-            self.state = 0
-            return msg.msg_dict.get('Win')
-            
-        elif self.attempts == 0:
-            self.state = 0
-            return msg.msg_dict.get('Lose').format(self.random_word)
+            return True
 
-        else:
-            return msg.msg_dict.get('AttemptsLeft').format(self.attempts)
+
+        
