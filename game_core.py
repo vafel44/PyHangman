@@ -11,19 +11,35 @@ class GameCore:
         self.p_letter = None
 
         #список слов, который задаётся в файле data.py
-        self.list_of_words = data.themes.get('NatureRU')
+        self.list_of_words = self.get_list_of_words(self.get_themes())
         
         #случайно выбранное слово из списка 
-        self.random_word = wor.select_random_word(self.list_of_words)
+        self.random_word = self.get_random_word(self.list_of_words)
 
-        self.rm_len = len(self.random_word)
+        #количество всех символов в слове
+        self.rm_len = self.get_rm_len(self.random_word)
 
         #количество попыток из уникальных букв в слове
-        self.attempts = wor.count_unique_letters(self.random_word)
+        self.attempts = self.get_attempts(self.random_word)
 
         #генерация списка отгаданных/неотгаданных букв и преобразование его к строке
         self.unguessed_list = ["_"] * self.rm_len #generate array with "_"
         self.unguessed_string = "  ".join(self.unguessed_list) #generate string from array with "_"
+    
+    def get_themes(self):
+        return data.themes
+
+    def get_random_word(self, low: list):
+        return wor.select_random_word(low)
+
+    def get_list_of_words(self, d_themes):
+        return d_themes.get('NatureRU')
+
+    def get_rm_len(self, r_w: str):
+        return len(r_w)
+
+    def get_attempts(self, r_w: str):
+        return wor.count_unique_letters(r_w)
 
     def game_start(self):
         os.system('cls' if os.name == 'nt' else 'clear')
